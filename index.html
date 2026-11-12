@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Back On Your Feet Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow column for a phone, big tap rows, progress pinned at the top. */
+:root {
+  --bg: #eef2f6;
+  --card: #ffffff;
+  --ink: #13233b;
+  --muted: #55657c;
+  --line: #d5dde7;
+  --accent: #1d4ed8;
+  --done: #17804f;
+  --done-bg: #e3f4ea;
+  --mark: #ffe08a;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1622; --card: #18222f; --ink: #edf2f8; --muted: #a3b1c4; --line: #2c3a4c;
+    --accent: #8fb4ff; --done: #5fd39a; --done-bg: #173527; --mark: #6b5310;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1622; --card: #18222f; --ink: #edf2f8; --muted: #a3b1c4; --line: #2c3a4c;
+  --accent: #8fb4ff; --done: #5fd39a; --done-bg: #173527; --mark: #6b5310;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 18px; line-height: 1.5;
+}
+.wrap { max-width: 620px; margin: 0 auto; padding: 0 16px 56px; display: flex; flex-direction: column; gap: 18px; }
+header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 14px 0 10px; border-bottom: 1px solid var(--line); }
+header.top .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1.1; margin: 0; text-wrap: balance; }
+#count { font-weight: 700; color: var(--done); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar { height: 10px; border-radius: 6px; background: var(--line); margin-top: 10px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--done); transition: width .3s; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+.lead { margin: 4px 0 0; font-size: 19px; }
+section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+h2 { font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.small { color: var(--muted); font-size: 16px; }
+ol.rules { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: r; }
+ol.rules li { counter-increment: r; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+ol.rules li::before { content: counter(r); font-family: var(--font-display); font-weight: 800; font-size: 22px; width: 40px; height: 40px; border-radius: 50%; background: var(--mark); color: #13233b; display: grid; place-items: center; }
+ul.checks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+ul.checks label { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; padding: 12px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+ul.checks input { width: 26px; height: 26px; margin: 1px 0 0; accent-color: var(--done); cursor: pointer; }
+ul.checks input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+ul.checks label:has(input:checked) { background: var(--done-bg); border-color: var(--done); }
+.tag { display: block; font-weight: 700; font-size: 15px; color: var(--muted); letter-spacing: .02em; }
+blockquote { margin: 0; padding: 14px; border-left: 5px solid var(--accent); background: var(--bg); border-radius: 0 10px 10px 0; }
+button.copy { align-self: flex-start; font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 10px; border: 2px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; }
+.phone { font-family: var(--font-display); font-weight: 800; font-size: 28px; font-variant-numeric: tabular-nums; }
+a { color: var(--accent); }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 17px; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 15px; color: var(--muted); }
+td.num { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="row"><h1>Back On Your Feet Plan</h1><span id="count">0 done</span></div>
+    <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+  </header>
+
+  <p class="lead">You can fix this. Do one small job a day. Tick it off when it is done. Your ticks are saved on this phone.</p>
+
+  <section>
+    <h2>Every payday, do these 3 things first</h2>
+    <ol class="rules">
+      <li><div><strong>Gas first.</strong> Put $40 in the tank on the way home. Now you can get to work all week.</div></li>
+      <li><div><strong>Rent second.</strong> Send your rent straight away. A part payment still counts.</div></li>
+      <li><div><strong>Food third.</strong> One supermarket shop, about $60.</div></li>
+    </ol>
+    <p>What is left is yours. Keep $25 for a treat.</p>
+  </section>
+
+  <section>
+    <h2>Week 1: one job a day</h2>
+    <p class="small">Each job takes 30 minutes or less. Missed a day? Do it tomorrow.</p>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="d1"><span><span class="tag">DAY 1</span>Text or email your landlord (Wolfbrook Property Management). Ask for your rent ledger. It shows exactly what you owe.</span></label></li>
+      <li><label><input type="checkbox" id="d2"><span><span class="tag">DAY 2</span>Call Work and Income. The words to say are below.</span></label></li>
+      <li><label><input type="checkbox" id="d3"><span><span class="tag">DAY 3</span>Cancel DoorDash DashPass and your Apple subscriptions.</span></label></li>
+      <li><label><input type="checkbox" id="d4"><span><span class="tag">DAY 4</span>Call MoneyTalks on 0800 345 123. Say: "I am behind on rent and I need a free financial mentor."</span></label></li>
+      <li><label><input type="checkbox" id="d5"><span><span class="tag">DAY 5</span>Send your landlord the offer message below.</span></label></li>
+      <li><label><input type="checkbox" id="d6"><span><span class="tag">DAY 6</span>Ask your boss for more days. Ask a workmate about sharing rides and splitting gas.</span></label></li>
+      <li><label><input type="checkbox" id="d7"><span><span class="tag">DAY 7</span>Call your car insurer and ask if your car is still covered. Then tell your support person what you got done.</span></label></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Calling Work and Income</h2>
+    <p>Free call. You can get help even if you are working part time.</p>
+    <p class="phone"><a href="tel:0800559009">0800 559 009</a></p>
+    <p><strong>Say this:</strong></p>
+    <blockquote id="winz">Hi. I work part time but I do not get enough hours. I am behind on my rent and I might lose my home. I want to apply for three things: Jobseeker Support, the Accommodation Supplement, and help with my rent arrears. Can you please note today as my first contact date?</blockquote>
+    <p>Then ask: "Is there any help with travel costs so I can get to work?"</p>
+    <p><strong>Have these ready.</strong> Photos on your phone are fine.</p>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="w1"><span>Two forms of ID. One must be government ID, like a driver licence or passport.</span></label></li>
+      <li><label><input type="checkbox" id="w2"><span>Your tenancy agreement.</span></label></li>
+      <li><label><input type="checkbox" id="w3"><span>A letter or rent ledger from your landlord showing what you owe.</span></label></li>
+      <li><label><input type="checkbox" id="w4"><span>Your last few payslips.</span></label></li>
+      <li><label><input type="checkbox" id="w5"><span>Your bank statements.</span></label></li>
+      <li><label><input type="checkbox" id="w6"><span>A CV. One page is fine.</span></label></li>
+    </ul>
+    <p class="small">Rent arrears help is up to 4 weeks of rent. It goes straight to your landlord and you pay it back slowly. Write down the name of the person you spoke to and the date. Finish the application within 20 working days of your first call.</p>
+  </section>
+
+  <section>
+    <h2>Message for your landlord</h2>
+    <p>Staying silent is what gets people evicted. Copy this, fill in the gaps, and send it.</p>
+    <blockquote id="landlord">Hi, this is [your name] from [your unit number]. I know I am behind on my rent and I want to fix it. Can you please send me my rent ledger so I know the exact amount? I have contacted Work and Income for help with the arrears. From [date] I can pay $[amount] every payday, plus $[amount] a week off what I owe. Can we agree to this in writing? Thank you.</blockquote>
+    <button class="copy" type="button" data-copy="landlord">Copy message</button>
+    <p class="small">Only promise what you can really pay. Open every letter. If you get a Tenancy Tribunal notice, turn up.</p>
+  </section>
+
+  <section>
+    <h2>Stop the leaks</h2>
+    <p>Doing these frees up about $85 a week.</p>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="l1"><span>Cancel DashPass. In the DoorDash app: Account, then Manage DashPass.</span></label></li>
+      <li><label><input type="checkbox" id="l2"><span>Cancel Apple subscriptions. Settings, tap your name, Subscriptions.</span></label></li>
+      <li><label><input type="checkbox" id="l3"><span>Keep one phone company. Ask Spark for their cheapest prepaid plan.</span></label></li>
+      <li><label><input type="checkbox" id="l4"><span>One takeaway a week, up to $25. Pick your favourite and enjoy it.</span></label></li>
+    </ul>
+    <p class="small">Easy dinners: chicken drumsticks and rice, mince and pasta, eggs on toast, sausages and frozen veges.</p>
+  </section>
+
+  <section>
+    <h2>Weeks 2 to 4</h2>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="m1"><span><span class="tag">WEEK 2</span>Decide about your home. Get a flatmate to split the rent (ask your landlord first), or move to a room that costs about half.</span></label></li>
+      <li><label><input type="checkbox" id="m2"><span><span class="tag">WEEK 2</span>Decide about the car. Swapping it for a $2,000 to $3,000 car could clear most of the rent you owe. Your call.</span></label></li>
+      <li><label><input type="checkbox" id="m3"><span><span class="tag">WEEK 3</span>Get more hours. Ask your boss again, drive for DoorDash on days off, and ask Work and Income to help you find extra work.</span></label></li>
+      <li><label><input type="checkbox" id="m4"><span><span class="tag">WEEK 4</span>Check in with your support person. Tank filled every payday? Rent sent every payday? One takeaway a week?</span></label></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Free help</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Who</th><th>Number</th><th>What for</th></tr></thead>
+        <tbody>
+          <tr><td>Work and Income</td><td class="num"><a href="tel:0800559009">0800 559 009</a></td><td>Money top-ups, rent help, finding work</td></tr>
+          <tr><td>MoneyTalks</td><td class="num"><a href="tel:0800345123">0800 345 123</a></td><td>A free financial mentor. You can also text 4029.</td></tr>
+          <tr><td>Tenancy Services</td><td class="num"><a href="tel:0800836262">0800 836 262</a></td><td>Free advice about your tenancy</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Calling them is not a handout. It is what they are there for.</p>
+  </section>
+</div>
+<script>
+(function () {
+  var KEY = "plan-ticks-v1";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+  function render() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById("count").textContent = done + " of " + boxes.length + " done";
+    document.getElementById("fill").style.width = (100 * done / boxes.length) + "%";
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!state[b.id];
+    b.addEventListener("change", function () {
+      state[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+      render();
+    });
+  });
+  render();
+  document.querySelectorAll("button.copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = document.getElementById(btn.getAttribute("data-copy")).textContent;
+      var label = btn.textContent;
+      function ok() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = label; }, 1800); }
+      function fail() { btn.textContent = "Press and hold the message to copy"; }
+      try { navigator.clipboard.writeText(text).then(ok, fail); } catch (e) { fail(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
