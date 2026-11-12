@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monthly Money Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow column for a phone, big tap rows, progress pinned at the top. */
+:root {
+  --bg: #eef2f6;
+  --card: #ffffff;
+  --ink: #13233b;
+  --muted: #55657c;
+  --line: #d5dde7;
+  --accent: #1d4ed8;
+  --done: #17804f;
+  --done-bg: #e3f4ea;
+  --mark: #ffe08a;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1622; --card: #18222f; --ink: #edf2f8; --muted: #a3b1c4; --line: #2c3a4c;
+    --accent: #8fb4ff; --done: #5fd39a; --done-bg: #173527; --mark: #6b5310;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1622; --card: #18222f; --ink: #edf2f8; --muted: #a3b1c4; --line: #2c3a4c;
+  --accent: #8fb4ff; --done: #5fd39a; --done-bg: #173527; --mark: #6b5310;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 18px; line-height: 1.5;
+}
+.wrap { max-width: 620px; margin: 0 auto; padding: 0 16px 56px; display: flex; flex-direction: column; gap: 18px; }
+header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 14px 0 10px; border-bottom: 1px solid var(--line); }
+header.top .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1.1; margin: 0; text-wrap: balance; }
+#count { font-weight: 700; color: var(--done); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar { height: 10px; border-radius: 6px; background: var(--line); margin-top: 10px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--done); transition: width .3s; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+.lead { margin: 4px 0 0; font-size: 19px; }
+section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+h2 { font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.small { color: var(--muted); font-size: 16px; }
+ol.rules { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: r; }
+ol.rules li { counter-increment: r; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+ol.rules li::before { content: counter(r); font-family: var(--font-display); font-weight: 800; font-size: 22px; width: 40px; height: 40px; border-radius: 50%; background: var(--mark); color: #13233b; display: grid; place-items: center; }
+ul.checks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+ul.checks label { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; padding: 12px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+ul.checks input { width: 26px; height: 26px; margin: 1px 0 0; accent-color: var(--done); cursor: pointer; }
+ul.checks input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+ul.checks label:has(input:checked) { background: var(--done-bg); border-color: var(--done); }
+.tag { display: block; font-weight: 700; font-size: 15px; color: var(--muted); letter-spacing: .02em; }
+blockquote { margin: 0; padding: 14px; border-left: 5px solid var(--accent); background: var(--bg); border-radius: 0 10px 10px 0; }
+button.copy { align-self: flex-start; font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 10px; border: 2px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; }
+.phone { font-family: var(--font-display); font-weight: 800; font-size: 28px; font-variant-numeric: tabular-nums; }
+a { color: var(--accent); }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 17px; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 15px; color: var(--muted); }
+td.num { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+nav.steps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+nav.steps a { display: block; text-align: center; padding: 10px 8px; border-radius: 10px; border: 2px solid var(--line); color: var(--ink); text-decoration: none; font-weight: 700; font-size: 16px; line-height: 1.2; }
+nav.steps a[aria-current="page"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.next { display: block; text-align: center; padding: 16px; border-radius: 12px; background: var(--accent); color: var(--bg); font-weight: 700; text-decoration: none; }
+button.reset { align-self: flex-start; font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 10px; border: 2px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+td.tot, th.tot { font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="row"><h1>Monthly Money Plan</h1><span id="count">0 done</span></div>
+    <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+    <nav class="steps" aria-label="Plan steps"><a href="index.html">Step 1<br>Do these now</a><a href="money.html" aria-current="page">Step 2<br>Monthly money plan</a></nav>
+  </header>
+
+  <p class="lead">This page is for when you are earning about $700 a week in the hand. Every dollar has a job. Follow it each payday and the rent debt goes down every week.</p>
+
+  <section>
+    <h2>Where the $700 goes each week</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Job</th><th>Each week</th><th>Each 4 weeks</th></tr></thead>
+        <tbody>
+          <tr><td>Rent</td><td class="num">$510</td><td class="num">$2,040</td></tr>
+          <tr><td>Gas</td><td class="num">$70</td><td class="num">$280</td></tr>
+          <tr><td>Phone plan and phone repayments</td><td class="num">$18</td><td class="num">$72</td></tr>
+          <tr><td>Groceries</td><td class="num">$45</td><td class="num">$180</td></tr>
+          <tr><td>Paying off the rent you owe</td><td class="num">$30</td><td class="num">$120</td></tr>
+          <tr><td>Car fund</td><td class="num">$10</td><td class="num">$40</td></tr>
+          <tr><td>Fun money</td><td class="num">$15</td><td class="num">$60</td></tr>
+          <tr><td>Emergency buffer</td><td class="num">$2</td><td class="num">$8</td></tr>
+          <tr><td class="tot">Total</td><td class="num">$700</td><td class="num">$2,800</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">There is no line for power or internet. If you pay those yourself, tell your support person. Check your Spark bill for the exact phone amount.</p>
+  </section>
+
+  <section>
+    <h2>Set it up once</h2>
+    <p>You have three accounts. Give each one a job, then make the payments automatic.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Account</th><th>Its job</th><th>Each payday</th></tr></thead>
+        <tbody>
+          <tr><td>Original (pay lands here)</td><td>Bills only. Never spend from it.</td><td class="num">$558</td></tr>
+          <tr><td>Replacement (your card)</td><td>Gas, groceries, fun</td><td class="num">$130</td></tr>
+          <tr><td>Savings</td><td>Car fund and buffer</td><td class="num">$12</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="s1"><span>Automatic payment of $540 to your landlord every payday. That is rent plus $30 off your debt.</span></label></li>
+      <li><label><input type="checkbox" id="s2"><span>Automatic transfer of $130 to your card account every payday.</span></label></li>
+      <li><label><input type="checkbox" id="s3"><span>Automatic transfer of $12 to Savings every payday.</span></label></li>
+      <li><label><input type="checkbox" id="s4"><span>Ask Spark to take your phone bill from the Original account.</span></label></li>
+    </ul>
+    <p>Once these run, the only money you can spend is the $130 on your card. Your rent and phone are already paid.</p>
+  </section>
+
+  <section>
+    <h2>Every payday, in this order</h2>
+    <ol class="rules">
+      <li><div><strong>Fill the tank.</strong> $70.</div></li>
+      <li><div><strong>Check the rent went out.</strong></div></li>
+      <li><div><strong>Supermarket shop.</strong> $45. Use free meals and food parcels to top it up.</div></li>
+      <li><div><strong>The $15 left is yours.</strong></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>This month</h2>
+    <p class="small">Tick each week off. After week 4, press the button to start a new month.</p>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="c1" class="cycle"><span><span class="tag">WEEK 1</span>Payday routine done. Extra job: check your Spark bill was paid from the Original account.</span></label></li>
+      <li><label><input type="checkbox" id="c2" class="cycle"><span><span class="tag">WEEK 2</span>Payday routine done. Extra job: check your Savings balance. It should be higher than last month.</span></label></li>
+      <li><label><input type="checkbox" id="c3" class="cycle"><span><span class="tag">WEEK 3</span>Payday routine done. Extra job: ask your landlord for your rent ledger and see the debt going down.</span></label></li>
+      <li><label><input type="checkbox" id="c4" class="cycle"><span><span class="tag">WEEK 4</span>Payday routine done. Extra job: sit down with your support person for 15 minutes.</span></label></li>
+    </ul>
+    <button class="reset" type="button" id="newmonth">Start a new month</button>
+    <p><strong>After four weeks you will have:</strong> paid $2,040 rent in full, taken $120 off your debt, and put $48 in Savings.</p>
+  </section>
+
+  <section>
+    <h2>Free food near you</h2>
+    <p>$45 a week on groceries works when you use the free food around you. Check times before you go.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>What</th><th>How</th></tr></thead>
+        <tbody>
+          <tr><td>Free hot dinner, LIFE Community Kitchens, Manurewa</td><td>Just turn up. Check <a href="https://www.lifecommunity.org.nz/life-community-kitchens">their website</a> for this week's times and place.</td></tr>
+          <tr><td>Food parcels, Salvation Army Manukau, 16b Bakerfield Place</td><td>Book through their Facebook page. A new booking link goes up each Thursday morning.</td></tr>
+          <tr><td>Food parcels, Manurewa Marae</td><td>Call <a href="tel:092678768">09 267 8768</a>.</td></tr>
+          <tr><td>Food grant, Work and Income</td><td>Call <a href="tel:0800559009">0800 559 009</a>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Clear the debt faster</h2>
+    <p>At $30 a week, a $5,000 debt takes about 3 years. Each of these makes it faster.</p>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="f1"><span>Ask Work and Income about the Accommodation Supplement. Put all of it on the debt.</span></label></li>
+      <li><label><input type="checkbox" id="f2"><span>Ask Work and Income for rent arrears help. Up to 4 weeks of rent goes straight to your landlord.</span></label></li>
+      <li><label><input type="checkbox" id="f3"><span>Think about swapping the car for a cheaper one. It could clear most of the debt in one go.</span></label></li>
+      <li><label><input type="checkbox" id="f4"><span>Pick up an extra shift or DoorDash on a day off. Put every extra dollar on the debt.</span></label></li>
+    </ul>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Paying each week</th><th>Debt gone in</th></tr></thead>
+        <tbody>
+          <tr><td class="num">$30</td><td>About 3 years 2 months</td></tr>
+          <tr><td class="num">$80</td><td>About 1 year 2 months</td></tr>
+          <tr><td class="num">$130</td><td>About 9 months</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <a class="next" href="index.html">Back to Step 1: the jobs to do now</a>
+</div>
+<script>
+(function () {
+  var KEY = "money-ticks-v1";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function render() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById("count").textContent = done + " of " + boxes.length + " done";
+    document.getElementById("fill").style.width = (100 * done / boxes.length) + "%";
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!state[b.id];
+    b.addEventListener("change", function () { state[b.id] = b.checked; save(); render(); });
+  });
+  document.getElementById("newmonth").addEventListener("click", function () {
+    boxes.forEach(function (b) { if (b.classList.contains("cycle")) { b.checked = false; state[b.id] = false; } });
+    save(); render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>

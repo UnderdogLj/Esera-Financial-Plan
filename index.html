@@ -71,6 +71,13 @@ table { border-collapse: collapse; width: 100%; font-size: 17px; }
 th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font-size: 15px; color: var(--muted); }
 td.num { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+nav.steps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+nav.steps a { display: block; text-align: center; padding: 10px 8px; border-radius: 10px; border: 2px solid var(--line); color: var(--ink); text-decoration: none; font-weight: 700; font-size: 16px; line-height: 1.2; }
+nav.steps a[aria-current="page"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.next { display: block; text-align: center; padding: 16px; border-radius: 12px; background: var(--accent); color: var(--bg); font-weight: 700; text-decoration: none; }
+button.reset { align-self: flex-start; font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 10px; border: 2px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+td.tot, th.tot { font-weight: 700; }
 </style>
 </head>
 <body>
@@ -78,6 +85,7 @@ td.num { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nu
   <header class="top">
     <div class="row"><h1>Back On Your Feet Plan</h1><span id="count">0 done</span></div>
     <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+    <nav class="steps" aria-label="Plan steps"><a href="index.html" aria-current="page">Step 1<br>Do these now</a><a href="money.html">Step 2<br>Monthly money plan</a></nav>
   </header>
 
   <p class="lead">You can fix this. Do one small job a day. Tick it off when it is done. Your ticks are saved on this phone.</p>
@@ -185,6 +193,8 @@ td.num { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nu
     </div>
     <p>Calling them is not a handout. It is what they are there for.</p>
   </section>
+
+  <a class="next" href="money.html">Working steady hours now? Go to Step 2: your monthly money plan</a>
 </div>
 <script>
 (function () {
